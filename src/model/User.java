@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package model;
 
 /**
@@ -14,7 +9,6 @@ public class User {
     Long id;
     String nome;
     String idade;
-    String cpf;
     String genero;
     String email;
     String tel;
@@ -23,9 +17,13 @@ public class User {
     String profissao;
     String filhos;
     String participacao;
-    String endereco;
     String tipo;
     String observacao;
+    String rg;
+    String bairro;
+    String cidade;
+    String estado;
+    String rua;
 
     public Long getId() {
         return id;
@@ -49,14 +47,6 @@ public class User {
 
     public void setIdade(String idade) {
         this.idade = idade;
-    }
-
-    public String getCpf() {
-        return cpf;
-    }
-
-    public void setCpf(String cpf) {
-        this.cpf = cpf;
     }
 
     public String getGenero() {
@@ -123,14 +113,6 @@ public class User {
         this.participacao = participacao;
     }
 
-    public String getEndereco() {
-        return endereco;
-    }
-
-    public void setEndereco(String endereco) {
-        this.endereco = endereco;
-    }
-
     public String getTipo() {
         return tipo;
     }
@@ -147,5 +129,46 @@ public class User {
         this.observacao = observacao;
     }
 
+    public String getRg() {
+        return rg;
+    }
+
+    public void setRg(String rg) {
+        this.rg = rg;
+    }
+
+    public String getBairro() {
+        return bairro;
+    }
+
+    public void setBairro(String bairro) {
+        this.bairro = bairro;
+    }
+
+    public String getCidade() {
+        return cidade;
+    }
+
+    public void setCidade(String cidade) {
+        this.cidade = cidade;
+    }
+
+    public String getEstado() {
+        return estado;
+    }
+
+    public void setEstado(String estado) {
+        this.estado = estado;
+    }
+
+    public String getRua() {
+        return rua;
+    }
+
+    public void setRua(String rua) {
+        this.rua = rua;
+    }
+
     
+
 }
