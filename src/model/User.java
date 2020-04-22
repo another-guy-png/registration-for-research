@@ -24,7 +24,7 @@ public class User {
     String cidade;
     String estado;
     String rua;
-
+   
     public Long getId() {
         return id;
     }

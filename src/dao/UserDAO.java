@@ -1,11 +1,15 @@
 package dao;
 
-import factory.ConnectionFactory;
+import connection.ConnectionFactory;
 import model.User;
 import java.sql.*;
 import java.sql.PreparedStatement;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
@@ -14,6 +18,9 @@ import java.util.List;
 public class UserDAO {
 
     private Connection connection;
+    private PreparedStatement stmt;
+    private ResultSet rs;
+    private String sql;
     Long id;
     String nome;
     String idade;
@@ -37,14 +44,23 @@ public class UserDAO {
         this.connection = new ConnectionFactory().getConnection();
     }
 
-    public boolean add(User usuario) {
+    public void create() {
+        connection = ConnectionFactory.getConnection();
+        stmt = null;
+    }
 
-        String sql = "INSERT INTO usuario(" + "nome," + "idade," + "genero," + "email," + "tel," + "classe,"
+    // INSERT IN TABLE
+    public void add(User usuario) {
+
+        stmt = null;
+
+        sql = "INSERT INTO usuario(" + "nome," + "idade," + "genero," + "email," + "tel," + "classe,"
                 + "estadocivil," + "profissao," + "filhos," + "participacao," + "tipo," + "observacao," + "rg,"
                 + "bairro," + "cidade," + "estado," + "rua)" + "VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);";
 
         try {
-            PreparedStatement stmt = connection.prepareStatement(sql);
+
+            stmt = connection.prepareStatement(sql);
             stmt.setString(1, usuario.getNome());
             stmt.setString(2, usuario.getIdade());
             stmt.setString(3, usuario.getGenero());
@@ -64,54 +80,43 @@ public class UserDAO {
             stmt.setString(17, usuario.getRua());
 
             stmt.executeUpdate();
-            stmt.close();
-            return true;
+
         } catch (SQLException u) {
-            throw new RuntimeException(u);
-
+            JOptionPane.showMessageDialog(null, "Erro ao salvar" + u);
+        } finally {
+            ConnectionFactory.closeConnection(connection, stmt);
         }
     }
 
-    public List<User> findAll() {
-
-        String sql = "SELECT * FROM usuario;";
-
-        ResultSet rs = null;
-        List<User> lista = new ArrayList<>();
-
+    // SELECT IN TABLE
+    public List<User> read() {
+        stmt = null;
+        rs = null;
+        sql = "SELECT id, nome, classe, filhos, participacao, tel FROM usuario;";
+        List<User> users = new ArrayList<>();
         try {
-            PreparedStatement psm = connection.prepareStatement(sql);
-            rs = psm.executeQuery();
-            while (rs.next()) {
-                User usuario = new User();
-                usuario.setNome(rs.getString("nome"));
-                usuario.setIdade(rs.getString("idade"));
-                usuario.setGenero(rs.getString("genero"));
-                usuario.setEmail(rs.getString("email"));
-                usuario.setTel(rs.getString("tel"));
-                usuario.setClasse(rs.getString("classe"));
-                usuario.setEstadocivil(rs.getString("estadocivil"));
-                usuario.setProfissao(rs.getString("profissao"));
-                usuario.setFilhos(rs.getString("filhos"));
-                usuario.setParticipacao(rs.getString("participacao"));
-                usuario.setTipo(rs.getString("tipo"));
-                usuario.setObservacao(rs.getString("observacao"));
-                usuario.setRg(rs.getString("rg"));
-                usuario.setBairro(rs.getString("bairro"));
-                usuario.setCidade(rs.getString("cidade"));
-                usuario.setEstado(rs.getString("estado"));
-                usuario.setRua(rs.getString("rua"));
-                lista.add(usuario);
-            }
-            psm.close();
-        } catch (SQLException ex) {
-            System.err.println("Erro");
-            lista = null;
+            stmt = connection.prepareStatement(sql);
+            rs = stmt.executeQuery();
 
+            while (rs.next()) {
+                User user = new User();
+                user.setId(rs.getLong("id"));
+                user.setNome(rs.getString("nome"));
+                user.setClasse(rs.getString("classe"));
+                user.setFilhos(rs.getString("filhos"));
+                user.setParticipacao(rs.getString("participacao"));
+                user.setTel(rs.getString("tel"));
+                users.add(user);
+            }
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(null, "Erro ao carregar tabela:" + ex);
+        } finally {
+            ConnectionFactory.closeConnection(connection, stmt, rs);
         }
-        return lista;
+        return users;
     }
 
+    // UPDATE IN TABLE
     public void update(User usuario) {
 
         String sql = "UPDATE usuario SET nome = ?, idade = ?, genero = ?, email = ?, tel = ?, classe = ?, estadocivil = ?, profissao = ?, filhos = ?, participacao = ?, tipo = ?, observacao = ?, rg = ?, bairro = ?, cidade = ?, estado = ?,rua = ? WHERE id = ?;";
@@ -138,13 +143,60 @@ public class UserDAO {
             stmt.setLong(18, usuario.getId());
 
             stmt.executeUpdate();
+
         } catch (SQLException ex) {
-            throw new RuntimeException(ex);
+            JOptionPane.showMessageDialog(null, "Erro ao atualizar:" + ex);
+        } finally {
+            ConnectionFactory.closeConnection(connection, stmt);
         }
-    }
-
-    public void delete() {
 
     }
 
+    // DELETE LINE IN TABLE
+    public void delete(User usuario) {
+        stmt = null;
+        try {
+            sql = "DELETE FROM usuario WHERE id <> 10";
+            stmt = connection.prepareStatement(sql);
+            stmt.execute();
+        } catch (SQLException ex) {
+            throw new RuntimeException("Erro ao deletar: ", ex);
+        }
+
+    }
+
+    // ToDo: add a functional "create table" if doesn't exist a schema
+//    public void CREATE_TABLE() {
+//        String sql = "CREATE DATABASE cadastro;"
+//                + "USE cadastro;"
+//                + "CREATE TABLE usuario ("
+//                + "id INT(20) NOT NULL AUTO_INCREMENT,"
+//                + "nome VARCHAR(255),"
+//                + "idade VARCHAR(255),"
+//                + "    genero VARCHAR(1),"
+//                + "    email VARCHAR(255),"
+//                + "    tel VARCHAR(255),"
+//                + "    classe VARCHAR(1),"
+//                + "    estadocivil VARCHAR(1),"
+//                + "    profissao VARCHAR(255),"
+//                + "    filhos VARCHAR(1),"
+//                + "    participacao VARCHAR(1),"
+//                + "    tipo VARCHAR(255),"
+//                + "    observacao VARCHAR(255),"
+//                + "    rg VARCHAR(255),"
+//                + "    bairro VARCHAR(255),"
+//                + "    cidade VARCHAR(255),"
+//                + "    estado VARCHAR(255),"
+//                + "    rua VARCHAR(255),"
+//                + "    PRIMARY KEY (id)"
+//                + ");";
+//
+//        try {
+//            Statement stmt = connection.createStatement();
+//            stmt.execute(sql);
+//        } catch (SQLException u) {
+//            throw new RuntimeException(u);
+//
+//        }
+//    }
 }
