@@ -44,11 +44,6 @@ public class UserDAO {
         this.connection = new ConnectionFactory().getConnection();
     }
 
-    public void create() {
-        connection = ConnectionFactory.getConnection();
-        stmt = null;
-    }
-
     // INSERT IN TABLE
     public void add(User usuario) {
 
@@ -119,7 +114,24 @@ public class UserDAO {
     // UPDATE IN TABLE
     public void update(User usuario) {
 
-        String sql = "UPDATE usuario SET nome = ?, idade = ?, genero = ?, email = ?, tel = ?, classe = ?, estadocivil = ?, profissao = ?, filhos = ?, participacao = ?, tipo = ?, observacao = ?, rg = ?, bairro = ?, cidade = ?, estado = ?,rua = ? WHERE id = ?;";
+        String sql = "UPDATE usuario SET nome = ?,"
+                + " idade = ?,"
+                + " genero = ?,"
+                + " email = ?,"
+                + " tel = ?,"
+                + " classe = ?,"
+                + " estadocivil = ?,"
+                + " profissao = ?, "
+                + "filhos = ?, "
+                + "participacao = ?, "
+                + "tipo = ?, "
+                + "observacao = ?, "
+                + "rg = ?, "
+                + "bairro = ?, "
+                + "cidade = ?, "
+                + "estado = ?,"
+                + "rua = ? "
+                + "WHERE id = ?;";
 
         try {
             PreparedStatement stmt = connection.prepareStatement(sql);
@@ -156,15 +168,50 @@ public class UserDAO {
     public void delete(User usuario) {
         stmt = null;
         try {
-            sql = "DELETE FROM usuario WHERE id <> 10";
+            sql = "DELETE FROM usuario WHERE id = ?";
             stmt = connection.prepareStatement(sql);
-            stmt.execute();
+            stmt.setLong(1, usuario.getId());
+            stmt.executeUpdate();
         } catch (SQLException ex) {
-            throw new RuntimeException("Erro ao deletar: ", ex);
+            JOptionPane.showMessageDialog(null, "Erro ao deletar: " + ex);
+        } finally {
+            ConnectionFactory.closeConnection(connection, stmt);
         }
 
     }
 
+    // SELECT FOR SEARCH
+    public List<User> readForSearch(String desc) {
+        
+        stmt = null;
+        rs = null;
+        sql = "SELECT * FROM usuario WHERE classe LIKE ?;";
+        List<User> users = new ArrayList<>();
+        
+        try {
+            stmt = connection.prepareStatement(sql);
+            stmt.setString(1, "%"+desc+"%");
+            rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                User user = new User();
+                user.setId(rs.getLong("id"));
+                user.setNome(rs.getString("nome"));
+                user.setClasse(rs.getString("classe"));
+                user.setFilhos(rs.getString("filhos"));
+                user.setParticipacao(rs.getString("participacao"));
+                user.setTel(rs.getString("tel"));
+                users.add(user);
+            }
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(null, "Erro ao carregar tabela:" + ex);
+        } finally {
+            ConnectionFactory.closeConnection(connection, stmt, rs);
+        }
+        return users;
+    }
+    
+    
     // ToDo: add a functional "create table" if doesn't exist a schema
 //    public void CREATE_TABLE() {
 //        String sql = "CREATE DATABASE cadastro;"
