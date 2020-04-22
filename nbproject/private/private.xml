@@ -12,10 +12,9 @@
     </editor-bookmarks>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group name="Integração Sertão (MDLog - GEMCO)">
-            <file>file:/home/joaomiranda/NetBeansProjects/DatabasePesquisa/src/view/UserGUI.java</file>
-            <file>file:/home/joaomiranda/NetBeansProjects/DatabasePesquisa/src/dao/UserDAO.java</file>
-            <file>file:/home/joaomiranda/NetBeansProjects/DatabasePesquisa/src/dao/UserListDAO.java</file>
-            <file>file:/home/joaomiranda/NetBeansProjects/DatabasePesquisa/nbproject/project.xml</file>
+            <file>file:/home/joaomiranda/NetBeansProjects/DatabasePesquisa/src/br/com/dao/UserDAO.java</file>
+            <file>file:/home/joaomiranda/NetBeansProjects/DatabasePesquisa/src/br/com/dao/FormatTextDAO.java</file>
+            <file>file:/home/joaomiranda/NetBeansProjects/DatabasePesquisa/src/br/com/view/UserGUI.java</file>
         </group>
     </open-files>
 </project-private>

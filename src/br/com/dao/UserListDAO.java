@@ -1,11 +1,6 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-package dao;
+package br.com.dao;
 
-import connection.ConnectionFactory;
+import br.com.connection.ConnectionFactory;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -13,15 +8,15 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JOptionPane;
-import model.User;
+import br.com.model.User;
 
 /**
- *
+ *  Classe para Tabela detalhada.
  * @author joaomiranda
  */
 public class UserListDAO {
 
-    private Connection connection;
+    private final Connection connection;
     private PreparedStatement stmt;
     private ResultSet rs;
     private String sql;
@@ -45,13 +40,21 @@ public class UserListDAO {
     String rua;
 
     public UserListDAO() {
-        this.connection = new ConnectionFactory().getConnection();
+        this.connection = ConnectionFactory.getConnection();
     }
 
-    public List<User> read() {
+    /**
+     *  Lista completa do banco.
+     * @return users;
+     */
+    public List<User> readFull() {
         stmt = null;
         rs = null;
-        sql = "SELECT * FROM usuario;";
+        sql = "SELECT " + "nome," + "idade," + "genero," + "email," + "tel," + "classe, "
+                + "estadocivil," + "profissao," + "filhos," + "participacao," + "tipo," + "observacao," + "rg,"
+                + "bairro," + "cidade," + "estado,"
+                + "rua FROM usuario;";
+
         List<User> users = new ArrayList<>();
         try {
             stmt = connection.prepareStatement(sql);
@@ -59,7 +62,6 @@ public class UserListDAO {
 
             while (rs.next()) {
                 User user = new User();
-                user.setId(rs.getLong("id"));
                 user.setNome(rs.getString("nome"));
                 user.setIdade(rs.getString("idade"));
                 user.setGenero(rs.getString("genero"));

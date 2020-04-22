@@ -1,4 +1,4 @@
-package connection;
+package br.com.connection;
 
 import com.mysql.cj.xdevapi.PreparableStatement;
 import java.sql.Connection;

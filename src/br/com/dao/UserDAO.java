@@ -1,7 +1,7 @@
-package dao;
+package br.com.dao;
 
-import connection.ConnectionFactory;
-import model.User;
+import br.com.connection.ConnectionFactory;
+import br.com.model.User;
 import java.sql.*;
 import java.sql.PreparedStatement;
 import java.util.ArrayList;
