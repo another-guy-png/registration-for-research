@@ -15,11 +15,21 @@ import javax.swing.text.PlainDocument;
  */
 public class FormatTextDAO extends PlainDocument {
 
-    @Override
-    public void insertString(int offs, String str, AttributeSet a) throws BadLocationException {
-        super.insertString(offs, str.replaceAll("[^0-9]", ""), a);
+    private int limit;
+
+    FormatTextDAO(int limit) {
+        this.limit = limit;
     }
-    
-    
-    
+
+    @Override
+    public void insertString(int offset, String str, AttributeSet attr) throws BadLocationException {
+        if (str == null) {
+            return;
+        }
+
+        if ((getLength() + str.length()) <= limit) {
+            super.insertString(offset, str, attr);
+        }
+    }
+
 }
